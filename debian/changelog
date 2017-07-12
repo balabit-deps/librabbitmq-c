@@ -1,0 +1,5 @@
+librabbitmq-c (0.8.0-1.syslogng70.1) syslogng70; urgency=medium
+
+  * import librabbitmq-c
+
+ -- gabornagy <gabor.nagy@balabit.com>  Thu, 14 Mar 2019 16:24:46 +0100
