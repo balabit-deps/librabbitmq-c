@@ -1,0 +1,5 @@
+name: librabbitmq-c 
+builder:
+  name: AutotoolsBuilder
+platforms:
+  - linux-glibc2.11/amd64
