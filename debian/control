@@ -1,0 +1,16 @@
+Source: librabbitmq-c
+Section: libdevel
+Priority: extra
+Maintainer: syslog-ng developers <syslog-ng@lists.balabit.hu>
+Build-depends: pkg-config
+Standards-Version: 3.6.1
+
+Package: librabbitmq-c
+Architecture: amd64
+Depends: ${shlibs:Depends}
+Description: This is a C-language AMQP client library for use with v2.0+ of the RabbitMQ broker.
+
+Package: librabbitmq-c-dbg
+Architecture: amd64
+Depends: librabbitmq-c
+Description: Debug symbols for librabbitmq-c

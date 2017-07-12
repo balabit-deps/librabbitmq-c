@@ -1,0 +1,33 @@
+#!/usr/bin/make -f
+STAMPDIR=tgz2build/stamps
+
+all: binary
+
+binary: $(STAMPDIR)/stamp-setup $(STAMPDIR)/stamp-configure $(STAMPDIR)/stamp-build $(STAMPDIR)/stamp-install
+
+setup: $(STAMPDIR)/stamp-setup
+$(STAMPDIR)/stamp-setup:
+	mkdir tgz2build/stamps || true
+	touch $@
+
+configure: $(STAMPDIR)/stamp-configure
+$(STAMPDIR)/stamp-configure: $(STAMPDIR)/stamp-setup
+	./configure --prefix="${ZBS_PREFIX}"
+	touch $@
+
+build: $(STAMPDIR)/stamp-build
+$(STAMPDIR)/stamp-build: $(STAMPDIR)/stamp-configure
+	$(MAKE)
+	touch $@
+
+install:  $(STAMPDIR)/stamp-install
+$(STAMPDIR)/stamp-install: $(STAMPDIR)/stamp-build
+	rm -rf $(ZBS_STAGE_DIR)
+	$(MAKE) install DESTDIR=$(ZBS_STAGE_DIR)
+	touch $@
+
+clean:
+	rm -rf tgz2build/stamps || true
+	rm -rf tgz2build/syslog-ng || true
+	rm -rf tgz2build/staging || true
+	$(MAKE) clean
