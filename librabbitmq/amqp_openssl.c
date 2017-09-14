@@ -635,6 +635,9 @@ initialize_openssl(void)
       openssl_initialized = 1;
     }
   }
+  if (AMQP_STATUS_OK != amqp_openssl_bio_init()) {
+    return -1;
+  }
 
   ++open_ssl_connections;
 
@@ -657,27 +660,30 @@ destroy_openssl(void)
     --open_ssl_connections;
   }
 
-#ifdef ENABLE_THREAD_SAFETY
-  if (0 == open_ssl_connections && do_initialize_openssl) {
-    /* Unsetting these allows the rabbitmq-c library to be unloaded
-     * safely. We do leak the amqp_openssl_lockarray. Which is only
-     * an issue if you repeatedly unload and load the library
-     */
-    ERR_remove_state(0);
-    FIPS_mode_set(0);
-    CRYPTO_set_locking_callback(NULL);
-    CRYPTO_set_id_callback(NULL);
-    ENGINE_cleanup();
-    CONF_modules_free();
-    EVP_cleanup();
-    CRYPTO_cleanup_all_ex_data();
-    ERR_free_strings();
-    openssl_initialized = 0;
-    #if (OPENSSL_VERSION_NUMBER >= 0x10002003L)
+  if (0 == open_ssl_connections) {
+    amqp_openssl_bio_destroy();
+    if (do_initialize_openssl) {
+      /* Unsetting these allows the rabbitmq-c library to be unloaded
+       * safely. We do leak the amqp_openssl_lockarray. Which is only
+       * an issue if you repeatedly unload and load the library
+       */
+      ERR_remove_state(0);
+      FIPS_mode_set(0);
+      CRYPTO_set_locking_callback(NULL);
+      CRYPTO_set_id_callback(NULL);
+      ENGINE_cleanup();
+      CONF_modules_free();
+      EVP_cleanup();
+      CRYPTO_cleanup_all_ex_data();
+      ERR_free_strings();
+      openssl_initialized = 0;
+#if (OPENSSL_VERSION_NUMBER >= 0x10002003L)
       SSL_COMP_free_compression_methods();
-    #endif
+#endif
+    }
   }
 
+#ifdef ENABLE_THREAD_SAFETY
   pthread_mutex_unlock(&openssl_init_mutex);
 #endif /* ENABLE_THREAD_SAFETY */
   return 0;
