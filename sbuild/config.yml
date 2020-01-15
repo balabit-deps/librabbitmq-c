@@ -1,5 +1,11 @@
 name: librabbitmq-c
 builder:
-  name: CmakeBuilder
+  name: CMakeBuilder
+  configure_options: |
+    -DCMAKE_BUILD_EXAMPLES=OFF
+    -DCMAKE_BUILD_TESTS=OFF
+    -DCMAKE_BUILD_TOOLS=OFF
+    -DCMAKE_ENABLE_SSL_SUPPORT=ON
+  flags: "no-make-dist"
 platforms:
   - linux-glibc2.11/amd64

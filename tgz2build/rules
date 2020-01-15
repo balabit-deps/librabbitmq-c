@@ -12,18 +12,27 @@ $(STAMPDIR)/stamp-setup:
 
 configure: $(STAMPDIR)/stamp-configure
 $(STAMPDIR)/stamp-configure: $(STAMPDIR)/stamp-setup
-	./configure --prefix="${ZBS_PREFIX}"
+	cmake \
+	  -DCMAKE_INSTALL_PREFIX="${ZBS_PREFIX}" \
+		-DCMAKE_BUILD_EXAMPLES=OFF \
+		-DCMAKE_BUILD_TESTS=OFF \
+		-DCMAKE_BUILD_TOOLS=OFF \
+		-DCMAKE_ENABLE_SSL_SUPPORT=ON \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-S . \
+		-B _build
 	touch $@
 
 build: $(STAMPDIR)/stamp-build
 $(STAMPDIR)/stamp-build: $(STAMPDIR)/stamp-configure
-	$(MAKE)
+	cmake --build _build
 	touch $@
 
 install:  $(STAMPDIR)/stamp-install
 $(STAMPDIR)/stamp-install: $(STAMPDIR)/stamp-build
 	rm -rf $(ZBS_STAGE_DIR)
-	$(MAKE) install DESTDIR=$(ZBS_STAGE_DIR)
+	cmake --build _build --target install -- DESTDIR=$(ZBS_STAGE_DIR)
 	touch $@
 
 clean:

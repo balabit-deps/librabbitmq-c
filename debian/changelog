@@ -1,3 +1,10 @@
+librabbitmq-c (0.10.0-1.syslogng70.1) syslogng70; urgency=medium
+
+  * update rabbitmq-c to v0.10.0
+  * change sbuild and tgz2build to cmake
+
+ -- laszloszemere <laszlo.szemere@quest.com>  Wed, 15 Jan 2020 14:48:38 +0100
+
 librabbitmq-c (0.8.0-1.syslogng70.1) syslogng70; urgency=medium
 
   * import librabbitmq-c
