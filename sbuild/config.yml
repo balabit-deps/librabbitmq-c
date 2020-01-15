@@ -1,0 +1,5 @@
+name: librabbitmq-c
+builder:
+  name: CmakeBuilder
+platforms:
+  - linux-glibc2.11/amd64
